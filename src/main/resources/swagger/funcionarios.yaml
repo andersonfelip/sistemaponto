@@ -1,0 +1,182 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: 'Pontoeletronico API'
+  description: 'API para gestao de ponto eletronico MicroService. Documento que define as rotas e entidades usadas entre a camada de interface e o model.'
+  contact:
+    email: anderson_felipe@hotmail.com
+schemes:
+ - http
+ - https
+host: br.com.andersonfelipe
+basePath: /pontoeletronico/
+tags:
+  - name: Ponto Eletronico
+paths:
+  /funcionarios/{pisFuncionario}:
+    get:
+      tags:
+        - funcionario
+      summary: Recupera um funcionario
+      description: ''
+      operationId: obterFuncionario
+      produces:
+        - application/json
+      parameters:
+        - name: pisFuncionario
+          in: path
+          description: ID do funcionario
+          required: true
+          type: string
+      responses:
+        200:
+          description: Operacao realizada com sucesso
+          schema:
+            $ref: '#/definitions/Funcionario'
+        404:
+          description: Funcionario nao encontrado
+          
+  /funcionarios:
+    get:
+      tags:
+        - funcionarios
+      summary: Lista de funcionarios
+      description: Lista os funcionarios
+      operationId: listarFuncionarios
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Operacao realizada com sucesso
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Funcionario'
+              
+  /funcionarios/{pisFuncionario}/batidas:
+    get:
+      tags:
+        - funcionarioBatidas
+      summary: Recupera as batidas para o funcionario filtrado
+      description: ''
+      operationId: obterBatidasPorFuncionario
+      produces:
+        - application/json
+      parameters:
+        - name: pisFuncionario
+          in: path
+          description: ID do funcionario para filtro das batidas
+          required: true
+          type: string
+      responses:
+        200:
+          description: Operacao realizada com sucesso
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Ponto'
+        404:
+          description: Ponto nao encontrado
+     
+  /funcionarios/{pisFuncionario}/batidas/{dataBatida}:
+    get:
+      tags:
+        - funcionarioBatidas
+      summary: Recupera as batidas para o funcionario filtrado
+      description: ''
+      operationId: obterBatidasPorFuncionarioFiltro
+      produces:
+        - application/json
+      parameters:
+        - name: pisFuncionario
+          in: path
+          description: ID do funcionario para filtro das batidas
+          required: true
+          type: string
+        - name: dataBatida
+          in: path
+          description: data da batida para filtro
+          required: true
+          type: string
+      responses:
+        200:
+          description: Operacao realizada com sucesso
+          schema:
+              $ref: '#/definitions/PontosPorDiaMes'
+        404:
+          description: Ponto nao encontrado
+
+  /funcionarios/{pisFuncionario}/incluirBatida:
+    post:
+      tags:
+        - funcionarioIncluirBatida
+      summary: Adiciona batida
+      description: ''
+      operationId: incluirBatida
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: pisFuncionario
+          in: path
+          description: ID do funcionario para inserir batida
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: batida a ser armazenada
+          required: true
+          schema:
+            $ref: '#/definitions/Ponto'
+      responses:
+        '200':
+          description: Operacao realizada com sucesso
+          schema:
+            $ref: '#/definitions/Ponto'
+        '400':
+          description: Entrada invalida
+        '409':
+          description: Entrada invalida
+          
+definitions:
+  Funcionario:
+    type: object
+    properties:
+      pis:
+        type: string
+      nome:
+        type: string
+      email:
+        type: string
+      status:
+        type: string
+  
+  Ponto:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      dataHoraBatida:
+        type: string
+      tipoRegistro:
+        type: string
+      pisFuncionario:
+        type: string
+  
+  PontosPorDiaMes:
+    type: object
+    properties:
+      pontos:
+          type: array
+          items:
+            $ref: '#/definitions/Ponto'
+      funcionario:
+          $ref: '#/definitions/Funcionario'
+      horasTrabalhadas:
+          type: number
+          format: double
+      minutosNecessarioDescanco:
+          type: number
+          format: int32
