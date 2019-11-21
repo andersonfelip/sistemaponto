@@ -1,0 +1,28 @@
+{
+	"folders": {},
+	"connections": {
+		"h2_embedded-16e865bea94-9d7f7a87ba37cf9": {
+			"provider": "generic",
+			"driver": "h2_embedded",
+			"name": "H2 Embedded - sistemaponto",
+			"save-password": true,
+			"read-only": false,
+			"configuration": {
+				"database": "~/data/sistemaponto",
+				"url": "jdbc:h2:~/data/sistemaponto",
+				"type": "dev",
+				"handlers": {}
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false
+		}
+	}
+}

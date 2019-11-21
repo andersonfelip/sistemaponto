@@ -25,6 +25,7 @@ public class Constants {
 		dataHoraInicio.set(Calendar.HOUR_OF_DAY, 0);
 		dataHoraInicio.set(Calendar.MINUTE,0);
 		dataHoraInicio.set(Calendar.SECOND,0);
+		dataHoraInicio.set(Calendar.MILLISECOND,0);
 		
 		return dataHoraInicio;
 	}
@@ -37,6 +38,7 @@ public class Constants {
 		dataHoraFim.set(Calendar.HOUR_OF_DAY, 23);
 		dataHoraFim.set(Calendar.MINUTE,59);
 		dataHoraFim.set(Calendar.SECOND,59);
+		dataHoraFim.set(Calendar.MILLISECOND,0);
 		return dataHoraFim;
 	}
 }
