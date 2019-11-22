@@ -10,7 +10,11 @@ import org.modelmapper.Converter;
 
 public class ModelConverter {
 	
-	public static Converter<Boolean, String> convertStatus = new AbstractConverter<Boolean, String>() {
+	private ModelConverter() {
+		throw new IllegalStateException("Utility class");
+	}
+	
+	public static final Converter<Boolean, String> convertStatus = new AbstractConverter<Boolean, String>() {
 		@Override
 		protected String convert(Boolean source) {
 			if(source) {
@@ -21,7 +25,7 @@ public class ModelConverter {
 		}
 	};
 	
-	public static Converter<String, String> convertTipoRegistro = new AbstractConverter<String, String>() {
+	public static final Converter<String, String> convertTipoRegistro = new AbstractConverter<String, String>() {
 		@Override
 		protected String convert(String source) {
 			if(source.equals(Constants.TIPO_REGISTRO_ENTRADA)) {
@@ -32,7 +36,7 @@ public class ModelConverter {
 		}
 	};
 	
-	public static Converter<Calendar, String> converFromCalendarToString = new AbstractConverter<Calendar, String>() {
+	public static final Converter<Calendar, String> converFromCalendarToString = new AbstractConverter<Calendar, String>() {
 		@Override
 		protected String convert(Calendar source) {
 			SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT_FULL_BR);	
@@ -41,7 +45,7 @@ public class ModelConverter {
 
 	};
 	
-	public static Converter<String, Calendar> convertFromStringToCalendar = new AbstractConverter<String, Calendar>() {
+	public static final Converter<String, Calendar> convertFromStringToCalendar = new AbstractConverter<String, Calendar>() {
 		@Override
 		protected Calendar convert(String source) {
 			SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT_FULL_BR);

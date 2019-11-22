@@ -33,22 +33,19 @@ public class FuncionarioController implements FuncionariosApi {
     
     private BancoHorasService bancoHorasService;
     
-    private ModelMapperComponent modelMapperComponent;
-    
-    public FuncionarioController(FuncionarioService funcionarioService,PontoService pontoService,BancoHorasService bancoHorasService,ModelMapperComponent modelMapperComponent) {
+    public FuncionarioController(FuncionarioService funcionarioService,PontoService pontoService,BancoHorasService bancoHorasService) {
 		super();
 		this.funcionarioService = funcionarioService;
 		this.pontoService = pontoService;
 		this.bancoHorasService= bancoHorasService;
-		this.modelMapperComponent = modelMapperComponent;
 	}
 
 	@Override
 	public ResponseEntity<List<Funcionario>> listarFuncionarios() {
 		List<FuncionarioDTO> funcionariosDTO = funcionarioService.listarFuncionarios();
 		
-		List<Funcionario> funcionarios = modelMapperComponent.modelMapper.map(funcionariosDTO, new TypeToken<List<Funcionario>>() {}.getType());
-		modelMapperComponent.modelMapper.validate();
+		List<Funcionario> funcionarios = ModelMapperComponent.modelMapper.map(funcionariosDTO, new TypeToken<List<Funcionario>>() {}.getType());
+		ModelMapperComponent.modelMapper.validate();
 		return new ResponseEntity<>(funcionarios, HttpStatus.OK);
 	}
 
@@ -57,8 +54,8 @@ public class FuncionarioController implements FuncionariosApi {
 		PontosPorDiaMes pontosPorDiaMes = new PontosPorDiaMes();
 		List<PontoDTO> pontosDTO = pontoService.listarBatidasPorFuncionarioDataHoraBatida(pisFuncionario,dataBatida);	
 		
-		List<Ponto> pontos = modelMapperComponent.modelMapper.map(pontosDTO, new TypeToken<List<Ponto>>() {}.getType());
-		modelMapperComponent.modelMapper.validate();
+		List<Ponto> pontos = ModelMapperComponent.modelMapper.map(pontosDTO, new TypeToken<List<Ponto>>() {}.getType());
+		ModelMapperComponent.modelMapper.validate();
 		
 		DataFiltroDTO dataFiltro = Converters.convertFromStringMesOuDiaEmCalendar(dataBatida);
 		BigDecimal saldoEmHoras = bancoHorasService.saldoHorasTrabalhadas(pisFuncionario, dataFiltro);
@@ -66,8 +63,8 @@ public class FuncionarioController implements FuncionariosApi {
 		
 		FuncionarioDTO funcionarioDTO = funcionarioService.obterFuncionario(pisFuncionario);
 		
-		Funcionario funcionario = modelMapperComponent.modelMapper.map(funcionarioDTO, Funcionario.class);
-		modelMapperComponent.modelMapper.validate();
+		Funcionario funcionario = ModelMapperComponent.modelMapper.map(funcionarioDTO, Funcionario.class);
+		ModelMapperComponent.modelMapper.validate();
 		
 		pontosPorDiaMes.setPontos(pontos);
 		pontosPorDiaMes.setFuncionario(funcionario);
@@ -80,8 +77,8 @@ public class FuncionarioController implements FuncionariosApi {
 	public ResponseEntity<Funcionario> obterFuncionario(@PathVariable String pisFuncionario) {
 		FuncionarioDTO funcionarioDTO = funcionarioService.obterFuncionario(pisFuncionario);
 		
-		Funcionario funcionario = modelMapperComponent.modelMapper.map(funcionarioDTO, Funcionario.class);
-		modelMapperComponent.modelMapper.validate();
+		Funcionario funcionario = ModelMapperComponent.modelMapper.map(funcionarioDTO, Funcionario.class);
+		ModelMapperComponent.modelMapper.validate();
 		return new ResponseEntity<>(funcionario, HttpStatus.OK);
 	}
 
@@ -92,14 +89,14 @@ public class FuncionarioController implements FuncionariosApi {
 		}
 		
 		body.setPisFuncionario(pisFuncionario);
-		com.andersonfelipe.pontoeletronico.app.domain.Ponto ponto = modelMapperComponent.modelMapper.map(body,
+		com.andersonfelipe.pontoeletronico.app.domain.Ponto ponto = ModelMapperComponent.modelMapper.map(body,
 				com.andersonfelipe.pontoeletronico.app.domain.Ponto.class);
-		modelMapperComponent.modelMapper.validate();
+		ModelMapperComponent.modelMapper.validate();
 		
 		com.andersonfelipe.pontoeletronico.app.domain.Ponto pontoSalvo = pontoService.save(ponto);
 		
-		Ponto response = modelMapperComponent.modelMapper.map(pontoSalvo,Ponto.class);
-		modelMapperComponent.modelMapper.validate();
+		Ponto response = ModelMapperComponent.modelMapper.map(pontoSalvo,Ponto.class);
+		ModelMapperComponent.modelMapper.validate();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -108,8 +105,8 @@ public class FuncionarioController implements FuncionariosApi {
 		List<PontoDTO> pontosDTO = pontoService.listarBatidasPorFuncionarioDataHoraBatida(pisFuncionario,null);	
 		
 		
-		List<Ponto> pontos = modelMapperComponent.modelMapper.map(pontosDTO, new TypeToken<List<Ponto>>() {}.getType());
-		modelMapperComponent.modelMapper.validate();
+		List<Ponto> pontos = ModelMapperComponent.modelMapper.map(pontosDTO, new TypeToken<List<Ponto>>() {}.getType());
+		ModelMapperComponent.modelMapper.validate();
 		return new ResponseEntity<>(pontos, HttpStatus.OK);
 	}
 }

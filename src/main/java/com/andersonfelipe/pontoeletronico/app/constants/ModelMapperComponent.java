@@ -14,11 +14,10 @@ import com.andersonfelipe.pontoeletronico.app.dto.PontoDTO;
 @Component
 public class ModelMapperComponent {
 	
-	public ModelMapper modelMapper;
+	public static final ModelMapper modelMapper= new ModelMapper();
 	
 	@PostConstruct
 	private void configureMapper() {
-		modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         
         modelMapper.addMappings(

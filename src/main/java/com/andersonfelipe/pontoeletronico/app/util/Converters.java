@@ -7,10 +7,19 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.andersonfelipe.pontoeletronico.app.constants.Constants;
 import com.andersonfelipe.pontoeletronico.app.dto.DataFiltroDTO;
 
 public class Converters {
+	
+	static Logger logger = LoggerFactory.getLogger(Converters.class);
+	
+	private Converters() {
+		throw new IllegalStateException("Utility class");
+	}
 
 	public static Calendar convertFromStringToCalendarFormatBr(String source) {
 		SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT_BR);
@@ -32,16 +41,16 @@ public class Converters {
 		SimpleDateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT_EUA);
 
 		df.setLenient(false);
-
+		Calendar calendar = Calendar.getInstance();
 		try {
 			Date date = null;
 			date = df.parse(source);
-			Calendar calendar = Calendar.getInstance();
+			
 			calendar.setTime(date);
-			return calendar;
 		} catch (ParseException e) {
-			return null;
+			logger.error(String.format("Não foi possível converter data %s", source));
 		}
+		return calendar;
 	}
 	
 	public static int convertFromHourToMinute(int hora) {

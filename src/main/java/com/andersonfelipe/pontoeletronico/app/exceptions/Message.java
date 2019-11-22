@@ -1,13 +1,13 @@
 package com.andersonfelipe.pontoeletronico.app.exceptions;
 
 public class Message {
-    private String message;
+    private String messagem;
 
-    public Message(String message) {
-        this.message = message;
+    public Message(String messagem) {
+        this.messagem = messagem;
     }
 
     public String getMessage() {
-        return message;
+        return messagem;
     }
 }

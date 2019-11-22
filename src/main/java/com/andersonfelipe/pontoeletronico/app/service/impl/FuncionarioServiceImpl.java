@@ -19,20 +19,17 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	
 	private FuncionarioRepository funcionarioRepository; 
 
-	private ModelMapperComponent modelMapperComponent;
-	
-	public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository,ModelMapperComponent modelMapperComponent) {
+	public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository) {
 		super();
 		this.funcionarioRepository = funcionarioRepository;
-		this.modelMapperComponent = modelMapperComponent;
 	}
 
 	@Override
 	public List<FuncionarioDTO> listarFuncionarios() {
 		List<Funcionario> funcionarios = funcionarioRepository.findAll();
 		
-		List<FuncionarioDTO> funcionariosDTO = modelMapperComponent.modelMapper.map(funcionarios, new TypeToken<List<FuncionarioDTO>>() {}.getType());
-		modelMapperComponent.modelMapper.validate();
+		List<FuncionarioDTO> funcionariosDTO = ModelMapperComponent.modelMapper.map(funcionarios, new TypeToken<List<FuncionarioDTO>>() {}.getType());
+		ModelMapperComponent.modelMapper.validate();
 		return funcionariosDTO;
 	}
 
@@ -44,8 +41,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 			throw new ExceptionNotFound("Este funcionário não existe");
 		}
 		
-		FuncionarioDTO funcionariosDTO = modelMapperComponent.modelMapper.map(funcionario, FuncionarioDTO.class);
-		modelMapperComponent.modelMapper.validate();
+		FuncionarioDTO funcionariosDTO = ModelMapperComponent.modelMapper.map(funcionario, FuncionarioDTO.class);
+		ModelMapperComponent.modelMapper.validate();
 		return funcionariosDTO;
 	}
 }

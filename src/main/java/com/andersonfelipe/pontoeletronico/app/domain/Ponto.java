@@ -26,12 +26,12 @@ public class Ponto {
         this.id = id;
     }
     
-	public Calendar getDataHoraBatida() {
-		return dataHoraBatida;
+    public Funcionario getFuncionario() {
+		return funcionario;
 	}
 
-	public void setDataHoraBatida(Calendar dataHoraBatida) {
-		this.dataHoraBatida = dataHoraBatida;
+	public void setFuncionario(Funcionario funcionario) {
+		this.funcionario = funcionario;
 	}
 
 	public String getTipoRegistro() {
@@ -41,12 +41,14 @@ public class Ponto {
 	public void setTipoRegistro(String tipoRegistro) {
 		this.tipoRegistro = tipoRegistro;
 	}
-
-	public Funcionario getFuncionario() {
-		return funcionario;
+	
+	public Calendar getDataHoraBatida() {
+		return dataHoraBatida;
 	}
 
-	public void setFuncionario(Funcionario funcionario) {
-		this.funcionario = funcionario;
+	public void setDataHoraBatida(Calendar dataHoraBatida) {
+		this.dataHoraBatida = dataHoraBatida;
 	}
+
+	
 }

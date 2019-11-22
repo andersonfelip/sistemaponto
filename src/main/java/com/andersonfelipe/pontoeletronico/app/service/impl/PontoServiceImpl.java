@@ -27,13 +27,10 @@ public class PontoServiceImpl implements PontoService {
 	
 	private BancoHorasService bancoHorasService;
 
-	private ModelMapperComponent modelMapperComponent;
-	
-	public PontoServiceImpl(PontoRepository pontoRepository,BancoHorasService bancoHorasService, ModelMapperComponent modelMapperComponent) {
+	public PontoServiceImpl(PontoRepository pontoRepository,BancoHorasService bancoHorasService) {
 		super();
 		this.pontoRepository = pontoRepository;
 		this.bancoHorasService = bancoHorasService;
-		this.modelMapperComponent = modelMapperComponent;
 	}
 
 	@Override
@@ -48,8 +45,8 @@ public class PontoServiceImpl implements PontoService {
 			pontos = pontoRepository.findByFuncionarioPisAndDataHoraBatidaBetween(pisFuncionario,dataHoraInicio,dataHoraFim);
 		}
 		 
-		List<PontoDTO> pontosDTO = modelMapperComponent.modelMapper.map(pontos, new TypeToken<List<PontoDTO>>() {}.getType());
-		modelMapperComponent.modelMapper.validate();
+		List<PontoDTO> pontosDTO = ModelMapperComponent.modelMapper.map(pontos, new TypeToken<List<PontoDTO>>() {}.getType());
+		ModelMapperComponent.modelMapper.validate();
 		return pontosDTO;
 	}
 
@@ -62,7 +59,7 @@ public class PontoServiceImpl implements PontoService {
 		
 		validar(ponto,ultimoPonto);
 		
-		ponto = preencherTipoRegistro(ponto,ultimoPonto);
+		preencherTipoRegistro(ponto,ultimoPonto);
 		
 		bancoHorasService.gerarHorasTrabalhadas(ponto);
 		
@@ -80,7 +77,7 @@ public class PontoServiceImpl implements PontoService {
 	}
 
 	
-	private Ponto preencherTipoRegistro(Ponto ponto,Ponto ultimoPonto) {
+	private void preencherTipoRegistro(Ponto ponto,Ponto ultimoPonto) {
 		if(ultimoPonto != null && ultimoPonto.getTipoRegistro().equals(Constants.TIPO_REGISTRO_ENTRADA)) {
 			ponto.setTipoRegistro(Constants.TIPO_REGISTRO_SAIDA);
 		}else if(ultimoPonto != null && ultimoPonto.getTipoRegistro().equals(Constants.TIPO_REGISTRO_SAIDA)) {
@@ -88,7 +85,6 @@ public class PontoServiceImpl implements PontoService {
 		}else {
 			ponto.setTipoRegistro(Constants.TIPO_REGISTRO_ENTRADA);
 		}
-		return ponto;
 	}
 	
 	private void checarCamposMandatorios(Ponto ponto) {

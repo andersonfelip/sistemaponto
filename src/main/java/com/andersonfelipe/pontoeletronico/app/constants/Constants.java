@@ -16,6 +16,10 @@ public class Constants {
 	public static final BigDecimal MINIMO_HORARIO_INTERVALO = new BigDecimal(240);
 	public static final BigDecimal MAXIMO_HORARIO_INTERVALO = new BigDecimal(360);
 	
+	private Constants() {
+		throw new IllegalStateException("Utility class");
+	}
+	
 	
 	public static final Calendar getMinHoraDia(Calendar dataHoraBatida) {
 		Calendar dataHoraInicio = Calendar.getInstance();

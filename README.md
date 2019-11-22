@@ -1,6 +1,6 @@
 # PontoEletronico
 ### 1.0.0 
-### [ Base URL: com.br.anderonfelip/ ]
+### [ Base URL: sistemaponto.herokuapp.com ]
 
 API para controle de ponto eletrônico
 
@@ -8,6 +8,22 @@ Aplicação baseada no spring boot usando spring data jpa e hibernate, seguindo 
 O código é gerado a cada build e a implementação da API usa a interface e o modelo gerado automaticamente a cada Build da aplicação.
 
 Utiliza injeção de dependências.
+
+### Documentação para uso da API encontra-se no LINK: ###
++ <a>https://app.swaggerhub.com/apis-docs/andersonfelipe/pontoeletronico/1.0.0</a>
+
+## Segurança
+A segurança do sistema está implementada através do Spring Security pela autenticação BASIC.
+
+Toda requisição deve ser autenticada através do usuário e senha no header da solicitação.
+
+Para ter acesso as requisições siga os passos abaixo:
+Através do PostMan clique no guia Authorization, no combo Type selecione "Basic Auth"
+
+```
+usename=123456
+password=123456
+```
 
 ## Banco de dados
 
@@ -31,9 +47,6 @@ Na pasta do projeto, digite: mvn clean install compile, para instalação das de
 
 ## Levantando serviço via Eclipse
 Executar a classe com.br.pontoeletronico.app.PontoeletronicoApplication
-
-### Documentação para uso da API encontra-se no LINK: ###
-+ https://app.swaggerhub.com/apis-docs/andersonfelipe/pontoeletronico/1.0.0
 
 Sistema criado em Spring Boot, utilizando das seguintes tecnologias:
 - SpringBoot
@@ -59,19 +72,6 @@ Deve ser criado um banco de nome: pontoeletronico
 - create table pontoeletronico;
 
 As entidades estão mapeadas para gerar suas respectivas tabelas.
-
-## Segurança
-A segurança do sistema está implementada através do Spring Security pela autenticação BASIC.
-
-Toda requisição deve ser autenticada através do usuário e senha no header da solicitação.
-
-Para ter acesso as requisições siga os passos abaixo:
-Através do PostMan clique no guia Authorization, no combo Type selecione "Basic Auth"
-
-```
-usename=123456
-password=123456
-```
 
 ### Incluir Batida
 Para realizar uma batida basta enviar um POST para a url https://pontoeletronicoanderson.herokuapp.com/funcionarios/{pisFuncionario}/incluirBatida Exemplo: https://pontoeletronicoanderson.herokuapp.com/funcionarios/123456/incluirBatida

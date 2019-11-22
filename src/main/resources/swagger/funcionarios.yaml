@@ -168,10 +168,6 @@ definitions:
   PontosPorDiaMes:
     type: object
     properties:
-      pontos:
-          type: array
-          items:
-            $ref: '#/definitions/Ponto'
       funcionario:
           $ref: '#/definitions/Funcionario'
       horasTrabalhadas:
@@ -180,3 +176,7 @@ definitions:
       minutosNecessarioDescanco:
           type: number
           format: int32
+      pontos:
+          type: array
+          items:
+            $ref: '#/definitions/Ponto'

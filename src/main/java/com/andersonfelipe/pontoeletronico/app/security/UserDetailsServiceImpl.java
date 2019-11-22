@@ -22,11 +22,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
-    public UserDetails loadUserByUsername(String pis) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String pis) {
         Funcionario applicationUser = funcionarioRepository.findByPis(pis);
         if (applicationUser == null) {
             throw new UsernameNotFoundException(pis);
         } 
-        return new User(applicationUser.getPis().toString(), applicationUser.getSenha(), applicationUser.getStatus(), true, true, true,  emptyList());
+        return new User(applicationUser.getPis(), applicationUser.getSenha(), applicationUser.getStatus(), true, true, true,  emptyList());
     }
 }

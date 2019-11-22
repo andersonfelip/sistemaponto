@@ -4,7 +4,7 @@ public class FuncionarioDTO {
 	private String nome;
 	private String pis;
 	private String email;
-	private Boolean Status;
+	private Boolean status;
 	
 	public String getNome() {
 		return nome;
@@ -25,9 +25,9 @@ public class FuncionarioDTO {
 		this.email = email;
 	}
 	public Boolean getStatus() {
-		return Status;
+		return status;
 	}
 	public void setStatus(Boolean status) {
-		Status = status;
+		this.status = status;
 	}
 }

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.andersonfelipe.pontoeletronico.app.constants.Constants;
-import com.andersonfelipe.pontoeletronico.app.constants.ModelMapperComponent;
 import com.andersonfelipe.pontoeletronico.app.domain.BancoHoras;
 import com.andersonfelipe.pontoeletronico.app.domain.Ponto;
 import com.andersonfelipe.pontoeletronico.app.dto.DataFiltroDTO;
@@ -21,17 +20,14 @@ import com.andersonfelipe.pontoeletronico.app.util.Converters;
 @Transactional
 public class BancoHorasServiceImpl implements BancoHorasService{
 
-	public BancoHorasRepository bancoHorasRepository;
+	private BancoHorasRepository bancoHorasRepository;
 	
-	public PontoRepository  pontoRepository;
+	private PontoRepository  pontoRepository;
 	
-	public ModelMapperComponent modelMapperComponent;
-
-	public BancoHorasServiceImpl(BancoHorasRepository bancoHorasRepository,PontoRepository  pontoRepository, ModelMapperComponent modelMapperComponent) {
+	public BancoHorasServiceImpl(BancoHorasRepository bancoHorasRepository,PontoRepository  pontoRepository) {
 		super();
 		this.bancoHorasRepository = bancoHorasRepository;
 		this.pontoRepository = pontoRepository;
-		this.modelMapperComponent = modelMapperComponent;
 	}
 	
 	@Override
@@ -69,7 +65,11 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 			saldoMinutosIntervalo = saldoMinutosIntervalo.add(item.getSaldoMinutosIntervalo() != null ? item.getSaldoMinutosIntervalo() : BigDecimal.ZERO);
 			saldoMinutosNecessarioDescanco = saldoMinutosNecessarioDescanco.add(item.getSaldoNecessarioDescanco() != null ? item.getSaldoNecessarioDescanco() : BigDecimal.ZERO);
 		}
-		return saldoMinutosNecessarioDescanco.subtract(saldoMinutosIntervalo);
+		saldoMinutosNecessarioDescanco = saldoMinutosNecessarioDescanco.subtract(saldoMinutosIntervalo);
+		if (saldoMinutosNecessarioDescanco.compareTo(BigDecimal.ZERO) > 0)
+			return saldoMinutosNecessarioDescanco;
+		else
+			return BigDecimal.ZERO;
 	}
 	
 	@Override
@@ -99,7 +99,6 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 	}
 	
 	private BigDecimal contabilizarHorasTrabalhadas(Calendar dataEntrada,Calendar dataSaida){
-		BigDecimal minutosTrabalhados = BigDecimal.ZERO;
 		
 		int horaEntrada = dataEntrada.get(Calendar.HOUR_OF_DAY);
 		int minutoEntrada = dataEntrada.get(Calendar.MINUTE);
@@ -109,19 +108,20 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		int minutoSaida = dataSaida.get(Calendar.MINUTE);
 		int minutosTotaisSaida = Converters.convertFromHourToMinute(horaSaida) + minutoSaida;
 		
-		minutosTrabalhados = new BigDecimal(minutosTotaisSaida -minutosTotaisEntrada);
+		BigDecimal minutosTrabalhados = new BigDecimal(minutosTotaisSaida -minutosTotaisEntrada);
 		
 		minutosTrabalhados = acrescentarAdicionalNoturno(minutosTrabalhados, horaSaida,horaEntrada, minutoSaida,minutoEntrada);
 		
-		switch(dataSaida.get(Calendar.DAY_OF_WEEK)){
-		  case Calendar.SUNDAY: minutosTrabalhados = adicionalDomingo(minutosTrabalhados);break;
-		  case Calendar.SATURDAY: minutosTrabalhados = adicionalSabado(minutosTrabalhados);break;
+		if(dataSaida.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+			minutosTrabalhados = adicionalDomingo(minutosTrabalhados);
+		}else if(dataSaida.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+			minutosTrabalhados = adicionalSabado(minutosTrabalhados);
 		}
+		
 		return minutosTrabalhados;
 	}
 	
 	private BigDecimal contabilizarTempoIntervalo(Calendar dataSaida,Calendar dataEntrada){
-		BigDecimal minutosIntervalo = BigDecimal.ZERO;
 		
 		int horaSaida = dataSaida.get(Calendar.HOUR_OF_DAY);
 		int minutoSaida = dataSaida.get(Calendar.MINUTE);
@@ -131,9 +131,7 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		int minutoEntrada = dataEntrada.get(Calendar.MINUTE);
 		int minutosTotaisEntrada = Converters.convertFromHourToMinute(horaEntrada) + minutoEntrada;
 
-		minutosIntervalo = new BigDecimal(minutosTotaisEntrada-minutosTotaisSaida);
-		
-		return minutosIntervalo;
+		return new BigDecimal(minutosTotaisEntrada-minutosTotaisSaida);
 	}
 	
 	private BigDecimal acrescentarAdicionalNoturno(BigDecimal minutosTrabalhados, int horaSaida,int horaEntrada,int minutoSaida,int minutoEntrada) {
@@ -150,17 +148,17 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 	}
 	
 	private BigDecimal adicionalNoturno(BigDecimal minutos) {
-		BigDecimal adicional = new BigDecimal(0.2D);
+		BigDecimal adicional = BigDecimal.valueOf(0.2D);
 		return minutos.multiply(adicional);
 	}
 	
 	private BigDecimal adicionalSabado(BigDecimal minutos) {
-		BigDecimal adicional = new BigDecimal(1.5D);
+		BigDecimal adicional = BigDecimal.valueOf(1.5D);
 		return minutos.multiply(adicional);
 	}
 	
 	private BigDecimal adicionalDomingo(BigDecimal minutos) {
-		BigDecimal adicional = new BigDecimal(2D);
+		BigDecimal adicional = BigDecimal.valueOf(2D);
 		return minutos.multiply(adicional);
 	}
 
