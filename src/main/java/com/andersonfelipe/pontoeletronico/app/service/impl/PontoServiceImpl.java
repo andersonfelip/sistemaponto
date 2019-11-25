@@ -30,6 +30,9 @@ public class PontoServiceImpl implements PontoService {
 	@Autowired
 	private BancoHorasService bancoHorasService;
 
+	/**
+	 * Listar as batidas pelo pis do funcionario agrupados por mês ou por dia.
+	 */
 	@Override
 	public List<PontoDTO> listarBatidasPorFuncionarioDataHoraBatida(String pisFuncionario,String dataBatida) {
 		List<Ponto> pontos = null;
@@ -47,6 +50,9 @@ public class PontoServiceImpl implements PontoService {
 		return pontosDTO;
 	}
 
+	/**
+	 * Método de incluir nova batida, verifica os campos mandatórios e preenche o tipo de registro (entrada/saida) dependendo do útimo registro.
+	 */
 	@Override
 	public Ponto save(Ponto ponto) {
 		
@@ -67,13 +73,24 @@ public class PontoServiceImpl implements PontoService {
 		return pontoRepository.save(ponto);
 	}
 	
+	/**
+	 * Recupera ultimo ponto para o dia da batida
+	 * @param ponto
+	 * @return
+	 */
 	private Ponto getUltimoPonto(Ponto ponto) {
 		Calendar dataHoraInicio = Constants.getMinHoraDia(ponto.getDataHoraBatida());
 		Calendar dataHoraFim = Constants.getMaxHoraDia(ponto.getDataHoraBatida());
 		return pontoRepository.findFirstByDataHoraBatidaBetweenOrderByDataHoraBatidaDesc(dataHoraInicio, dataHoraFim);
 	}
 
-	
+	/**
+	 * Preenche o tipo do registro atual baseado no último registro seguindo a regra:
+	 * caso último registro seja do tipo entrada, então o atual é saída.
+	 * caso último registro seja do tipo saída, então o atual é entrada.
+	 * @param ponto
+	 * @param ultimoPonto
+	 */
 	private void preencherTipoRegistro(Ponto ponto,Ponto ultimoPonto) {
 		if(ultimoPonto != null && ultimoPonto.getTipoRegistro().equals(Constants.TIPO_REGISTRO_ENTRADA)) {
 			ponto.setTipoRegistro(Constants.TIPO_REGISTRO_SAIDA);
@@ -83,7 +100,10 @@ public class PontoServiceImpl implements PontoService {
 			ponto.setTipoRegistro(Constants.TIPO_REGISTRO_ENTRADA);
 		}
 	}
-	
+	/**
+	 * Checa os campos mandatórios para o parâmetro ponto
+	 * @param ponto
+	 */
 	private void checarCamposMandatorios(Ponto ponto) {
 
 		if(ponto.getDataHoraBatida() == null) {
@@ -94,6 +114,11 @@ public class PontoServiceImpl implements PontoService {
 		}
 	}
 	
+	/**
+	 * Valida algumas regras necessárias.
+	 * @param ponto
+	 * @param ultimoPonto
+	 */
 	private void validar(Ponto ponto,Ponto ultimoPonto) {
 		//Validar somente uma batida por minuto
 		if(ultimoPonto != null && ultimoPonto.getDataHoraBatida() != null && ponto.getDataHoraBatida().equals(ultimoPonto.getDataHoraBatida())) {
@@ -110,9 +135,12 @@ public class PontoServiceImpl implements PontoService {
 		}
 	}
 
+	/**
+	 * Recupera o ponto para o Tipo de registro(Entrada/Saída), pis e data e hora do ponto informado.
+	 */
 	@Override
 	public Ponto findFirstByTipoRegistroAndFuncionarioPisAndDataHoraBatidaLessThanOrderByDataHoraBatidaDesc(
-			String tipoRegistroEntrada, String pis, Calendar dataHoraBatida) {
-		return pontoRepository.findFirstByTipoRegistroAndFuncionarioPisAndDataHoraBatidaLessThanOrderByDataHoraBatidaDesc(tipoRegistroEntrada, pis, dataHoraBatida);
+			String tipoRegistro, String pis, Calendar dataHoraBatida) {
+		return pontoRepository.findFirstByTipoRegistroAndFuncionarioPisAndDataHoraBatidaLessThanOrderByDataHoraBatidaDesc(tipoRegistro, pis, dataHoraBatida);
 	}
 }

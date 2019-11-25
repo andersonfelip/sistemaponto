@@ -34,11 +34,47 @@ public class FuncionarioControllerTest {
 	private static final String host = "http://localhost:";
 
 	@Test
-	public void testeCriarBatida() {
+	public void testeCriarBatida1() {
 		Funcionario func = criarFuncionario();
 		
 		Ponto ponto = new Ponto();
 		ponto.setDataHoraBatida("19/11/2019 09:00:00");
+		
+		HttpEntity<Ponto> entity = new HttpEntity<Ponto>(ponto, headers);
+		ResponseEntity<String> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()+"/incluirBatida"), HttpMethod.POST, entity, String.class);
+		assertEquals(HttpStatus.OK,response.getStatusCode());
+	}
+	
+	@Test
+	public void testeCriarBatida2() {
+		Funcionario func = criarFuncionario();
+		
+		Ponto ponto = new Ponto();
+		ponto.setDataHoraBatida("19/11/2019 12:00:00");
+		
+		HttpEntity<Ponto> entity = new HttpEntity<Ponto>(ponto, headers);
+		ResponseEntity<String> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()+"/incluirBatida"), HttpMethod.POST, entity, String.class);
+		assertEquals(HttpStatus.OK,response.getStatusCode());
+	}
+	
+	@Test
+	public void testeCriarBatida3() {
+		Funcionario func = criarFuncionario();
+		
+		Ponto ponto = new Ponto();
+		ponto.setDataHoraBatida("19/11/2019 13:00:00");
+		
+		HttpEntity<Ponto> entity = new HttpEntity<Ponto>(ponto, headers);
+		ResponseEntity<String> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()+"/incluirBatida"), HttpMethod.POST, entity, String.class);
+		assertEquals(HttpStatus.OK,response.getStatusCode());
+	}
+	
+	@Test
+	public void testeCriarBatida4() {
+		Funcionario func = criarFuncionario();
+		
+		Ponto ponto = new Ponto();
+		ponto.setDataHoraBatida("19/11/2019 18:00:00");
 		
 		HttpEntity<Ponto> entity = new HttpEntity<Ponto>(ponto, headers);
 		ResponseEntity<String> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()+"/incluirBatida"), HttpMethod.POST, entity, String.class);

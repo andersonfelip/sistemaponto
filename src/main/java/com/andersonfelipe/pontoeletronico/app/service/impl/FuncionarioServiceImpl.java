@@ -21,6 +21,9 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	@Autowired
 	private FuncionarioRepository funcionarioRepository; 
 
+	/**
+	 * Lista de todos os funcionários cadastrados
+	 */
 	@Override
 	public List<FuncionarioDTO> listarFuncionarios() {
 		List<Funcionario> funcionarios = funcionarioRepository.findAll();
@@ -30,6 +33,9 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 		return funcionariosDTO;
 	}
 
+	/**
+	 * Recupera Funcionário através do pis informado.
+	 */
 	@Override
 	public FuncionarioDTO obterFuncionario(String pisFuncionario) {
 		Funcionario funcionario = funcionarioRepository.findByPis(pisFuncionario);

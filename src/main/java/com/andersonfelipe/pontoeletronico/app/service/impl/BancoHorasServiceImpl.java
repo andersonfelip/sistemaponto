@@ -27,16 +27,25 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 	@Autowired
 	private PontoRepository  pontoRepository;
 	
+	/**
+	 * Recupera o banco de horas através do pis e Data e hora informada.
+	 */
 	@Override
 	public BancoHoras findByFuncionarioPisAndDataHoraBancoHoras(String pisFuncionario,Calendar dataBancoHoras) {
 		return bancoHorasRepository.findByFuncionarioPisAndDataHoraBancoHoras(pisFuncionario, dataBancoHoras);
 	}
 	
+	/**
+	 * Recupera uma lista de banco de horas através do pis no intervalo de duas datas; 
+	 */
 	@Override
 	public List<BancoHoras> findByFuncionarioPisAndDataHoraBancoHorasBetween(String pisFuncionario,Calendar dataHoraInicio, Calendar dataHoraFim) {
 		return bancoHorasRepository.findByFuncionarioPisAndDataHoraBancoHorasBetween(pisFuncionario, dataHoraInicio, dataHoraFim);
 	}
 	
+	/**
+	 * Recupera o saldo de horas trabalhadas através do pis no intervalo de duas datas;
+	 */
 	@Override
 	public BigDecimal saldoHorasTrabalhadas(String pisFuncionario,DataFiltroDTO dataFiltro) {
 		BigDecimal saldoHorasTrabalhadas = BigDecimal.ZERO;
@@ -51,6 +60,9 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		return Converters.convertFromMinuteToHour(saldoHorasTrabalhadas);
 	}
 	
+	/**
+	 * Recupera o saldo necessário de descanco através do pis no intervalo de duas datas;
+	 */
 	@Override
 	public BigDecimal saldoNecessarioDescanco(String pisFuncionario,DataFiltroDTO dataFiltro) {
 		BigDecimal saldoMinutosIntervalo = BigDecimal.ZERO;
@@ -69,6 +81,9 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 			return BigDecimal.ZERO;
 	}
 	
+	/**
+	 * Salva na entidade BancoHoras o total de horas trabalhadas em minutos quando o funcionário informa um ponto do tipo saída.
+	 */
 	@Override
 	public void gerarHorasTrabalhadas(Ponto ponto) {
 		if(ponto.getTipoRegistro().equals(Constants.TIPO_REGISTRO_SAIDA)) {
@@ -94,6 +109,13 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		}
 	}
 	
+	/**
+	 * Método de auxiliar para calcular as horas trabalhadas em minutos no intervalo de duas datas e horas. 
+	 * Regra para as horas trabalhadas no sábado ou domingo.
+	 * @param dataEntrada
+	 * @param dataSaida
+	 * @return
+	 */
 	private BigDecimal contabilizarHorasTrabalhadas(Calendar dataEntrada,Calendar dataSaida){
 		
 		int horaEntrada = dataEntrada.get(Calendar.HOUR_OF_DAY);
@@ -117,6 +139,12 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		return minutosTrabalhados;
 	}
 	
+	/**
+	 * Método auxiliar para calcular tempo de Intervalo em minutos no intervalo de duas datas e horas;
+	 * @param dataSaida
+	 * @param dataEntrada
+	 * @return
+	 */
 	private BigDecimal contabilizarTempoIntervalo(Calendar dataSaida,Calendar dataEntrada){
 		
 		int horaSaida = dataSaida.get(Calendar.HOUR_OF_DAY);
@@ -130,6 +158,15 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		return new BigDecimal(minutosTotaisEntrada-minutosTotaisSaida);
 	}
 	
+	/**
+	 * Método auxiliar verifica a regra de adicional noturno
+	 * @param minutosTrabalhados
+	 * @param horaSaida
+	 * @param horaEntrada
+	 * @param minutoSaida
+	 * @param minutoEntrada
+	 * @return
+	 */
 	private BigDecimal acrescentarAdicionalNoturno(BigDecimal minutosTrabalhados, int horaSaida,int horaEntrada,int minutoSaida,int minutoEntrada) {
 		int horaSaidaAdicionalNoturno 	= 0;
 		int minutosSaidaAdicionalNoturno = 0;
@@ -143,23 +180,41 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		return minutosTrabalhados.add(adicionalNoturno(new BigDecimal(minutosTotaisAdicionalNoturno)));
 	}
 	
+	/**
+	 * Método auxiliar que aplica a multiplicação do adicional noturno.
+	 * @param minutos
+	 * @return
+	 */
 	private BigDecimal adicionalNoturno(BigDecimal minutos) {
 		BigDecimal adicional = BigDecimal.valueOf(0.2D);
 		return minutos.multiply(adicional);
 	}
 	
+	/**
+	 * Método auxiliar que aplica a multiplicação do adicional de sábado.
+	 * @param minutos
+	 * @return
+	 */
 	private BigDecimal adicionalSabado(BigDecimal minutos) {
 		BigDecimal adicional = BigDecimal.valueOf(1.5D);
 		return minutos.multiply(adicional);
 	}
 	
+	/**
+	 * Método auxiliar que aplica a multiplicação do adicional de domingo.
+	 * @param minutos
+	 * @return
+	 */
 	private BigDecimal adicionalDomingo(BigDecimal minutos) {
 		BigDecimal adicional = BigDecimal.valueOf(2D);
 		return minutos.multiply(adicional);
 	}
 
+	/**
+	 * Salva na entidade BancoHoras o total do intervalo que o funcionário já passou.
+	 */
 	@Override
-	public void gerarHorasIntervalo(Ponto ponto) {
+	public void gerarHorasIntervalo(Ponto ponto){
 		if(ponto.getTipoRegistro().equals(Constants.TIPO_REGISTRO_ENTRADA)) {
 			Ponto pontoSaidaAnterior = pontoRepository.findFirstByTipoRegistroAndFuncionarioPisAndDataHoraBatidaLessThanOrderByDataHoraBatidaDesc(Constants.TIPO_REGISTRO_SAIDA, ponto.getFuncionario().getPis(), ponto.getDataHoraBatida());
 			if(pontoSaidaAnterior != null) {
@@ -184,17 +239,22 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 		}
 	}
 
+	/**
+	 * Salva na entidade BancoHoras o total de horas que são necessárias de descanco.
+	 */
 	@Override
-	public void gerarHorasNecessariasDescanco(Ponto ponto) {
-		Calendar dataBancoHoras =Constants.getMinHoraDia(ponto.getDataHoraBatida());
-		BancoHoras bancoHoras = bancoHorasRepository.findByFuncionarioPisAndDataHoraBancoHoras(ponto.getFuncionario().getPis(), dataBancoHoras);
-		if(bancoHoras != null) {
-			if(bancoHoras.getSaldoMinutos().compareTo(Constants.MINIMO_HORARIO_INTERVALO) > 0  && 0 > bancoHoras.getSaldoMinutos().compareTo(Constants.MAXIMO_HORARIO_INTERVALO)) {
-				bancoHoras.setSaldoNecessarioDescanco(new BigDecimal(15));
-			}else if(bancoHoras.getSaldoMinutos().compareTo(Constants.MAXIMO_HORARIO_INTERVALO) >= 0) {
-				bancoHoras.setSaldoNecessarioDescanco(new BigDecimal(60));
+	public void gerarHorasNecessariasDescanco(Ponto ponto){
+		if(ponto != null) {
+			Calendar dataBancoHoras =Constants.getMinHoraDia(ponto.getDataHoraBatida());
+			BancoHoras bancoHoras = bancoHorasRepository.findByFuncionarioPisAndDataHoraBancoHoras(ponto.getFuncionario().getPis(), dataBancoHoras);
+			if(bancoHoras != null) {
+				if(bancoHoras.getSaldoMinutos().compareTo(Constants.MINIMO_HORARIO_INTERVALO) > 0  && 0 > bancoHoras.getSaldoMinutos().compareTo(Constants.MAXIMO_HORARIO_INTERVALO)) {
+					bancoHoras.setSaldoNecessarioDescanco(new BigDecimal(15));
+				}else if(bancoHoras.getSaldoMinutos().compareTo(Constants.MAXIMO_HORARIO_INTERVALO) >= 0) {
+					bancoHoras.setSaldoNecessarioDescanco(new BigDecimal(60));
+				}
+				bancoHorasRepository.save(bancoHoras);
 			}
-			bancoHorasRepository.save(bancoHoras);
 		}
 	}
 }

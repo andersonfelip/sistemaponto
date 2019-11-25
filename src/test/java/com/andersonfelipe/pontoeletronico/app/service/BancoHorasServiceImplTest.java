@@ -2,6 +2,7 @@ package com.andersonfelipe.pontoeletronico.app.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -108,7 +109,11 @@ public class BancoHorasServiceImplTest {
 	
 	@Test
 	public void testeGerarHorasTrabalhadas() {
-		bancoHorasService.gerarHorasTrabalhadas(pontoSaida);
+		try {
+			bancoHorasService.gerarHorasTrabalhadas(pontoSaida);
+		}catch (Exception e) {
+			fail("Erro ao gerar horas trabalhadas");
+		}
 	}
 	
 	@Test
@@ -123,12 +128,21 @@ public class BancoHorasServiceImplTest {
 	
 	@Test
 	public void testeGerarHorasNecessariasDescanco() {
-		bancoHorasService.gerarHorasNecessariasDescanco(pontoSaida);
+		try {
+			bancoHorasService.gerarHorasNecessariasDescanco(pontoSaida);
+		}catch (Exception e) {
+			fail("Erro ao gerar horas necessarias descanco");
+		}
 	}
 	
 	@Test
 	public void testeGerarHorasIntervalo() {
-		bancoHorasService.gerarHorasIntervalo(pontoEntrada);
+		try {
+			bancoHorasService.gerarHorasIntervalo(pontoEntrada);
+		}catch (Exception e) {
+			fail("Erro ao gerar horas intervalo");
+		}
+		
 	}
 	
 	private BancoHoras criarBancoHoras() {
