@@ -1,6 +1,7 @@
 package com.andersonfelipe.pontoeletronico.app.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.ws.rs.core.MediaType;
 
@@ -19,6 +20,7 @@ import org.springframework.util.Base64Utils;
 
 import com.andersonfelipe.pontoeletronico.api.model.Funcionario;
 import com.andersonfelipe.pontoeletronico.api.model.Ponto;
+import com.andersonfelipe.pontoeletronico.api.model.PontosPorDiaMes;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,11 +30,11 @@ public class FuncionarioControllerTest {
 	private int port = 80;
 	TestRestTemplate restTemplate = new TestRestTemplate();
 	HttpHeaders headers = basicAuth();
-
+	
 	private static final String host = "http://localhost:";
 
 	@Test
-	public void testeCriarBatida() throws Exception {
+	public void testeCriarBatida() {
 		Funcionario func = criarFuncionario();
 		
 		Ponto ponto = new Ponto();
@@ -41,6 +43,51 @@ public class FuncionarioControllerTest {
 		HttpEntity<Ponto> entity = new HttpEntity<Ponto>(ponto, headers);
 		ResponseEntity<String> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()+"/incluirBatida"), HttpMethod.POST, entity, String.class);
 		assertEquals(HttpStatus.OK,response.getStatusCode());
+	}
+	
+	@Test
+	public void testeListarFuncionarios() {
+		
+		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+		ResponseEntity<Funcionario[]> response = restTemplate.exchange(criarUrlPorta("/funcionarios"), HttpMethod.GET, entity, Funcionario[].class);
+		Funcionario[] funcionarios = response.getBody();
+		
+		assertNotNull(funcionarios);
+	}
+	
+	@Test
+	public void testeGetFuncionario() {
+		Funcionario func = criarFuncionario();
+		
+		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+		ResponseEntity<Funcionario> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()), HttpMethod.GET, entity, Funcionario.class);
+		Funcionario funcionario = response.getBody();
+		
+		assertEquals(func, funcionario);
+	}
+	
+	@Test
+	public void testeGetBatidas() {
+		Funcionario func = criarFuncionario();
+		
+		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+		ResponseEntity<Ponto[]> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()+"/batidas"), HttpMethod.GET, entity, Ponto[].class);
+		Ponto[] pontos = response.getBody();
+		
+		assertNotNull(pontos);
+	}
+	
+	@Test
+	public void testeBatidasPorFiltro() {
+		Funcionario func = criarFuncionario();
+		
+		String filtroMesDia = "2019-11";
+		
+		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+		ResponseEntity<PontosPorDiaMes> response = restTemplate.exchange(criarUrlPorta("/funcionarios/"+func.getPis()+"/batidas/"+filtroMesDia), HttpMethod.GET, entity, PontosPorDiaMes.class);
+		PontosPorDiaMes pontosPorDiaMes= response.getBody();
+		
+		assertNotNull(pontosPorDiaMes);
 	}
 	
 	private HttpHeaders basicAuth() {

@@ -10,7 +10,7 @@ import com.andersonfelipe.pontoeletronico.app.dto.DataFiltroDTO;
 
 public interface BancoHorasService {
 
-	void gerarHorasTrabalhadas(Ponto ponto);
+	public void gerarHorasTrabalhadas(Ponto ponto);
 
 	public BancoHoras findByFuncionarioPisAndDataHoraBancoHoras(String pisFuncionario, Calendar dataBancoHoras);
 

@@ -18,7 +18,6 @@ import com.andersonfelipe.pontoeletronico.app.constants.ModelMapperComponent;
 import com.andersonfelipe.pontoeletronico.app.dto.DataFiltroDTO;
 import com.andersonfelipe.pontoeletronico.app.dto.FuncionarioDTO;
 import com.andersonfelipe.pontoeletronico.app.dto.PontoDTO;
-import com.andersonfelipe.pontoeletronico.app.exceptions.ExceptionBadRequest;
 import com.andersonfelipe.pontoeletronico.app.service.BancoHorasService;
 import com.andersonfelipe.pontoeletronico.app.service.FuncionarioService;
 import com.andersonfelipe.pontoeletronico.app.service.PontoService;
@@ -84,10 +83,6 @@ public class FuncionarioController implements FuncionariosApi {
 
 	@Override
 	public ResponseEntity<Ponto> incluirBatida(@PathVariable String pisFuncionario,@RequestBody Ponto body) {
-		if(body == null) {
-			throw new ExceptionBadRequest("Não foi possível registrar ponto.Favor preencha os dados necessários.");
-		}
-		
 		body.setPisFuncionario(pisFuncionario);
 		com.andersonfelipe.pontoeletronico.app.domain.Ponto ponto = ModelMapperComponent.modelMapper.map(body,
 				com.andersonfelipe.pontoeletronico.app.domain.Ponto.class);

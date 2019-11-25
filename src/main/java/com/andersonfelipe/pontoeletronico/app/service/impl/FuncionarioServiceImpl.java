@@ -3,6 +3,7 @@ package com.andersonfelipe.pontoeletronico.app.service.impl;
 import java.util.List;
 
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +18,8 @@ import com.andersonfelipe.pontoeletronico.app.service.FuncionarioService;
 @Transactional
 public class FuncionarioServiceImpl implements FuncionarioService {
 	
+	@Autowired
 	private FuncionarioRepository funcionarioRepository; 
-
-	public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository) {
-		super();
-		this.funcionarioRepository = funcionarioRepository;
-	}
 
 	@Override
 	public List<FuncionarioDTO> listarFuncionarios() {

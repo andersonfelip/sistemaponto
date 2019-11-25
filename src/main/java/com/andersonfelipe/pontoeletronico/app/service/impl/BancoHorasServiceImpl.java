@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,11 @@ import com.andersonfelipe.pontoeletronico.app.util.Converters;
 @Transactional
 public class BancoHorasServiceImpl implements BancoHorasService{
 
+	@Autowired
 	private BancoHorasRepository bancoHorasRepository;
 	
+	@Autowired
 	private PontoRepository  pontoRepository;
-	
-	public BancoHorasServiceImpl(BancoHorasRepository bancoHorasRepository,PontoRepository  pontoRepository) {
-		super();
-		this.bancoHorasRepository = bancoHorasRepository;
-		this.pontoRepository = pontoRepository;
-	}
 	
 	@Override
 	public BancoHoras findByFuncionarioPisAndDataHoraBancoHoras(String pisFuncionario,Calendar dataBancoHoras) {
@@ -79,7 +76,6 @@ public class BancoHorasServiceImpl implements BancoHorasService{
 			Calendar dataBancoHoras =Constants.getMinHoraDia(ponto.getDataHoraBatida());
 			
 			Ponto pontoEntrada = pontoRepository.findFirstByTipoRegistroAndFuncionarioPisAndDataHoraBatidaLessThanOrderByDataHoraBatidaDesc(Constants.TIPO_REGISTRO_ENTRADA, ponto.getFuncionario().getPis(), ponto.getDataHoraBatida());
-			
 			BigDecimal minutosTrabalhados = contabilizarHorasTrabalhadas(pontoEntrada.getDataHoraBatida(),ponto.getDataHoraBatida());
 			
 			BancoHoras bancoHoras = bancoHorasRepository.findByFuncionarioPisAndDataHoraBancoHoras(ponto.getFuncionario().getPis(), dataBancoHoras);

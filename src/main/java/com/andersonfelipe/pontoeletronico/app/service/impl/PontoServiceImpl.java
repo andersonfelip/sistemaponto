@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -23,15 +24,11 @@ import com.andersonfelipe.pontoeletronico.app.util.Converters;
 @Transactional
 public class PontoServiceImpl implements PontoService {
 
+	@Autowired
 	private PontoRepository pontoRepository;
 	
+	@Autowired
 	private BancoHorasService bancoHorasService;
-
-	public PontoServiceImpl(PontoRepository pontoRepository,BancoHorasService bancoHorasService) {
-		super();
-		this.pontoRepository = pontoRepository;
-		this.bancoHorasService = bancoHorasService;
-	}
 
 	@Override
 	public List<PontoDTO> listarBatidasPorFuncionarioDataHoraBatida(String pisFuncionario,String dataBatida) {
